@@ -12,5 +12,4 @@ public class BookmanagerApplication {
 		SpringApplication.run(BookmanagerApplication.class, args);
 		System.out.println(generateDummyBooks());
 	}
-
 }
