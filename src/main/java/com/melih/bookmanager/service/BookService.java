@@ -1,39 +1,73 @@
-package model;
+package com.melih.bookmanager.service;
 
-import service.BookService;
+import com.melih.bookmanager.api.model.Book;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Book {
-    private String ISBN;
-    private String title;
-    private String author;
-    private int pages;
+@Service
+public class BookService {
+    private List<Book> books = new ArrayList<>();
 
-    public Book(String ISBN, String title, String author, int pages) {
-        this.ISBN = ISBN;
-        this.title = title;
-        this.author = author;
-        this.pages = pages;
+    // Constructor with instant enrichment
+    public BookService() {
+        List<Book> dummyBooks = new ArrayList<>(generateDummyBooks());
+        this.books = dummyBooks;
     }
 
-    // Getters
-    public String getISBN() {return ISBN;}
-    public String getTitle() {return title;}
-    public String getAuthor() {return author;}
-    public int getPages() {return pages;}
+    public List<Book> getAllBooks() {
+        return books;
+    }
 
-    // Setters
-    public void setTitle(String title) {this.title = title;}
-    public void setAuthor(String author) {this.author = author;}
-    public void setPages(int pages) {this.pages = pages;}
+    public Optional<Book> getBookByISBN(String isbn) {
+        Optional optional = Optional.empty();
+        for(Book book : books) {
+            if(book.getISBN().equals(isbn)) {
+                optional = Optional.of(book);
+            }
+        }
+        return optional;
+    }
 
-    // For a quick overview
-    public String toString() {
-        return "ISBN: " + ISBN + "\nTitle: " + title + "\nAuthor: " + author + "\nPages: " + pages;
+    public boolean addBook(Book book) {
+        // Matching is based only on isbn, because of sufficient identification
+        boolean exists = this.books.stream().anyMatch(b -> b.getISBN().equals(book.getISBN()));
+
+        if (exists) {
+            return false;
+        }
+        books.add(book);
+        return true;
+    }
+
+    public void addAllBooks(List<Book> books) {
+        for (Book book : books) {
+            addBook(book);
+        }
+    }
+
+    public boolean removeBook(Book book) {
+        boolean exists = this.books.stream().anyMatch(b -> b.getISBN().equals(book.getISBN()));
+        if (!exists) {
+            return false;
+        }
+        books.remove(book);
+        return true;
+    }
+    public boolean updateBook(Book book) {
+        Optional<Book> foundBook = this.books.stream().filter(b -> b.getISBN().equals(book.getISBN()))
+                .findFirst();
+        if (foundBook.isEmpty()) {
+            return false;
+        }
+        Book bookToUpdate = foundBook.get();
+        bookToUpdate.setTitle(book.getTitle());
+        bookToUpdate.setAuthor(book.getAuthor());
+        bookToUpdate.setPages(book.getPages());
+        return true;
     }
 
     // Generate a list of Dummy-Books for testing purposes
@@ -83,5 +117,4 @@ public class Book {
         }
         return books;
     }
-
 }

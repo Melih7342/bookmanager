@@ -1,4 +1,4 @@
-package model;
+package com.melih.bookmanager.api.model;
 
 import java.util.List;
 import java.util.UUID;
