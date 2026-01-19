@@ -2,6 +2,7 @@ package com.melih.bookmanager.api.controller;
 
 import com.melih.bookmanager.api.model.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.melih.bookmanager.service.BookService;
@@ -19,8 +20,13 @@ public class BookController {
 
     // Get all books
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public ResponseEntity<List<Book>> getAllBooks() {
+        List<Book> books = bookService.getAllBooks();
+
+        if (books.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(books);
     }
 
     // Get a specific book with its ISBN
@@ -30,4 +36,10 @@ public class BookController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    // Add a new Book
+    @PostMapping
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {}
+
+
 }
