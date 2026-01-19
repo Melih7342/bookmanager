@@ -39,7 +39,18 @@ public class BookController {
 
     // Add a new Book
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {}
+    public ResponseEntity<Book> addBook(@RequestBody Book newBook) {
+        bookService.addBook(newBook);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBook);
+    }
 
+    // Add a list of books at once
+    @PostMapping("/bulk")
+    public ResponseEntity<String> addBooksBulk(@RequestBody List<Book> books) {
+        bookService.addBooksBulk(books);
+        // Only number of added books in body to save performance
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(String.format("Successfully added %d books", books.size()));
+    }
 
 }

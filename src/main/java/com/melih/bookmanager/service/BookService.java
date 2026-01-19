@@ -1,7 +1,11 @@
 package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.Book;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,18 +36,18 @@ public class BookService {
         return optional;
     }
 
-    public boolean addBook(Book book) {
-        // Matching is based only on isbn, because of sufficient identification
-        boolean exists = this.books.stream().anyMatch(b -> b.getISBN().equals(book.getISBN()));
-
-        if (exists) {
-            return false;
-        }
-        books.add(book);
-        return true;
+    public boolean existsByISBN(String isbn) {
+        return this.books.stream().anyMatch(b -> b.getISBN().equals(isbn));
     }
 
-    public void addAllBooks(List<Book> books) {
+    public void addBook(Book book) {
+        if(existsByISBN(book.getISBN())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book already exists");
+        }
+        books.add(book);
+    }
+
+    public void addBooksBulk(List<Book> books) {
         for (Book book : books) {
             addBook(book);
         }
