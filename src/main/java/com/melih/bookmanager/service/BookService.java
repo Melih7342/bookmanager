@@ -69,17 +69,23 @@ public class BookService {
         }
     }
 
-    public boolean updateBook(Book book) {
+    public void updateBook(Book book) {
         Optional<Book> foundBook = this.books.stream().filter(b -> b.getISBN().equals(book.getISBN()))
                 .findFirst();
         if (foundBook.isEmpty()) {
-            return false;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
         }
         Book bookToUpdate = foundBook.get();
         bookToUpdate.setTitle(book.getTitle());
         bookToUpdate.setAuthor(book.getAuthor());
         bookToUpdate.setPages(book.getPages());
-        return true;
+    }
+
+    @Transactional
+    public void updateBooksBulk(List<Book> books) {
+        for (Book book : books) {
+            updateBook(book);
+        }
     }
 
     // Generate a list of Dummy-Books for testing purposes

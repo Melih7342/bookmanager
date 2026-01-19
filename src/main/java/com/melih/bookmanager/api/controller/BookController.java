@@ -39,14 +39,14 @@ public class BookController {
 
     // Add a new Book
     @PostMapping
-    public ResponseEntity<Book> addBook(@RequestBody Book newBook) {
+    public ResponseEntity<Book> createBook(@RequestBody Book newBook) {
         bookService.addBook(newBook);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBook);
     }
 
     // Add a list of books at once
     @PostMapping("/bulk")
-    public ResponseEntity<String> addBooksBulk(@RequestBody List<Book> books) {
+    public ResponseEntity<String> createBooksBulk(@RequestBody List<Book> books) {
         bookService.addBooksBulk(books);
         // Only number of added books in body to save performance
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -60,11 +60,24 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
+    // Delete bulk of books
     @DeleteMapping("/bulk")
     public ResponseEntity<String> deleteBooksBulk(@RequestBody List<String> isbn) {
         bookService.removeBooksBulk(isbn);
         return ResponseEntity.ok(String.format("Successfully deleted %d books", isbn.size()));
     }
 
+    // Update one book
+    @PutMapping
+    public ResponseEntity<String> updateBook(@RequestBody Book book) {
+        bookService.updateBook(book);
+        return ResponseEntity.noContent().build();
+    }
 
+    // Update bulk of books
+    @PutMapping("/bulk")
+    public ResponseEntity<String> updateBooksBulk(@RequestBody List<Book> books) {
+        bookService.updateBooksBulk(books);
+        return ResponseEntity.ok(String.format("Successfully updated %d books", books.size()));
+    }
 }
