@@ -1,11 +1,8 @@
 package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.Book;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BookTests {
     private BookService bookService;
+
     @BeforeEach
     public void setUp() {
         // Initial books for test cases
@@ -37,13 +35,13 @@ public class BookTests {
         // THEN
         assertTrue(result.isPresent(), "Book should be found");
 
-        Book book = result.get();
-        assertAll("Book attributes",
-                () -> assertEquals("Der Wind am Ende der Welt", book.getTitle()),
-                () -> assertEquals("Franz Kafka", book.getAuthor()),
-                () -> assertEquals(300, book.getPages())
-        );
+        Book bookToFind = new Book("978-3-16-148410-0", "Der Wind am Ende der Welt", "Franz Kafka", 300);
+        Book foundBook = result.get();
+
+        assertEquals(bookToFind, foundBook, "Found book equals the book to find");
+
     }
+
     @Test
     public void shouldThrowExceptionWhenGetBookByISBN() {
         // GIVEN
@@ -53,5 +51,29 @@ public class BookTests {
 
         // THEN
         assertFalse(result.isPresent());
+    }
+
+    @Test
+    void shouldReturnTrueWhenIsbnExists() {
+        // GIVEN
+        String existingIsbn = "978-3-16-148410-0";
+
+        // WHEN
+        boolean exists = bookService.existsByISBN(existingIsbn);
+
+        // THEN
+        assertTrue(exists, "Should return true for existing ISBN");
+    }
+
+    @Test
+    void shouldReturnFalseWhenIsbnNonExistent() {
+        // GIVEN
+        String nonExistingIsbn = "999-3-16-148410-5";
+
+        // WHEN
+        boolean exists = bookService.existsByISBN(nonExistingIsbn);
+
+        // THEN
+        assertFalse(exists, "Should return false for non existing ISBN");
     }
 }

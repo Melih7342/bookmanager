@@ -2,7 +2,6 @@ package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.Book;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
