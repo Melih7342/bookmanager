@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.melih.bookmanager.service.BookService;
 import java.util.List;
+import static com.melih.bookmanager.service.BookService.generateDummyBooks;
 
 @RestController
 @RequestMapping("/books")
@@ -15,7 +16,8 @@ public class BookController {
 
     @Autowired
     public BookController(BookService bookService) {
-        this.bookService = bookService;
+        this.bookService = new BookService(generateDummyBooks()); // Initialising with dummy books for test cases
+        // this.bookService = bookService  --> final constructor
     }
 
     // Get all books

@@ -14,12 +14,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class BookService {
-    private List<Book> books = new ArrayList<>();
+    private List<Book> books;
 
     // Constructor with instant enrichment
-    public BookService() {
-        List<Book> dummyBooks = new ArrayList<>(generateDummyBooks());
-        this.books = dummyBooks;
+    public BookService(List<Book> books) {
+        this.books = books;
     }
 
     public List<Book> getAllBooks() {
