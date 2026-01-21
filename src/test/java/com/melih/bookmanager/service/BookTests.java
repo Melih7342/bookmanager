@@ -30,7 +30,7 @@ public class BookTests {
     }
 
     @Test
-    void shouldGetBookByISBN() {
+    void givenExistingIsbn_whenGetBookByISBN_thenReturnsCorrectBook() {
         // GIVEN
         String isbn = "978-3-16-148410-0";
 
@@ -44,13 +44,13 @@ public class BookTests {
         Book foundBook = result.get();
 
         assertThat(bookToFind).isEqualTo(foundBook);
-
     }
 
     @Test
-    public void shouldThrowExceptionWhenGetBookByISBN() {
+    void givenNonExistentIsbn_whenGetBookByISBN_thenReturnsEmptyOptional() {
         // GIVEN
         String nonExistentIsbn = "999-3-16-148410-5";
+
         // WHEN
         Optional<Book> result = bookService.getBookByISBN(nonExistentIsbn);
 
@@ -59,7 +59,7 @@ public class BookTests {
     }
 
     @Test
-    void shouldReturnTrueWhenIsbnExists() {
+    void givenExistingIsbn_whenCheckingExistence_thenReturnsTrue() {
         // GIVEN
         String existingIsbn = "978-3-16-148410-0";
 
@@ -71,7 +71,7 @@ public class BookTests {
     }
 
     @Test
-    void shouldReturnFalseWhenIsbnNonExistent() {
+    void givenNonExistentIsbn_whenCheckingExistence_thenReturnsFalse() {
         // GIVEN
         String nonExistingIsbn = "999-3-16-148410-5";
 
@@ -83,7 +83,7 @@ public class BookTests {
     }
 
     @Test
-    void shouldAddNewBook() {
+    void givenNewBook_whenAddingBook_thenBookIsPersistedAndSizeIncreases() {
         // GIVEN
         int initialSize = bookService.getAllBooks().size();
         Book newBook = new Book("999-3-16-148410-5", "Faust", "Goethe", 92);
@@ -99,7 +99,7 @@ public class BookTests {
     }
 
     @Test
-    void shouldThrowConflictExceptionWhenIsbnAlreadyExists() {
+    void givenDuplicateIsbn_whenAddingBook_thenThrowsConflictException() {
         // GIVEN
         Book existingBook = new Book("978-3-16-148410-0", "Der Wind am Ende der Welt", "Franz Kafka", 300);
 
@@ -110,4 +110,57 @@ public class BookTests {
                 .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
                 .isEqualTo(HttpStatus.CONFLICT);
     }
+
+    @Test
+    void givenMultipleNewBooks_whenAddingBulk_thenAllBooksArePersisted() {
+        // GIVEN
+        List<Book> newBooks = new ArrayList<>(List.of(
+                new Book("999", "Schirach", "Terror", 255),
+                new Book("888", "Haruki Murakami", "Kafka on the shore", 987)
+        ));
+        int initialSize = bookService.getAllBooks().size();
+        int newBooksSize = newBooks.size();
+
+        // WHEN
+        bookService.addBooksBulk(newBooks);
+        List<Book> books = bookService.getAllBooks();
+
+        //THEN
+        assertThat(books)
+                .containsAll(newBooks)
+                .hasSize(initialSize + newBooksSize);
+    }
+
+    @Test
+    void givenOneExistingBook_whenAddingBulk_thenExceptionIsThrown() {
+        // GIVEN
+        Book existingBook = new Book("978-3-16-148410-0", "Der Wind am Ende der Welt", "Franz Kafka", 300);
+        Book nonExistingBook = new Book("888", "Haruki Murakami", "Kafka on the shore", 987);
+
+        List<Book> toBeAddedBooks = new ArrayList<>(List.of(existingBook, nonExistingBook));
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> bookService.addBooksBulk(toBeAddedBooks))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("Book already exists")
+                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
+                .isEqualTo(HttpStatus.CONFLICT);
+    }
+    @Test
+    void givenOneExistingBook_whenAddingBulk_thenNoBooksArePersisted() {
+        // GIVEN
+        Book existingBook = new Book("978-3-16-148410-0", "Der Wind am Ende der Welt", "Franz Kafka", 300);
+        Book nonExistingBook = new Book("888", "Haruki Murakami", "Kafka on the shore", 987);
+        List<Book> toBeAddedBooks = new ArrayList<>(List.of(existingBook, nonExistingBook));
+        int initialSize = bookService.getAllBooks().size();
+
+        // WHEN & THEN: Catch the exception
+        assertThatThrownBy(() -> bookService.addBooksBulk(toBeAddedBooks))
+                .isInstanceOf(ResponseStatusException.class);
+
+        // THEN: Check if no books were added
+        List<Book> booksAfterFailedAction = bookService.getAllBooks();
+        assertThat(booksAfterFailedAction).hasSize(initialSize);
+    }
+
 }
