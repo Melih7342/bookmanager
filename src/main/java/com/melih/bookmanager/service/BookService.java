@@ -1,6 +1,7 @@
 package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.Book;
+import com.melih.bookmanager.exception.BookAlreadyExistsException;
 import com.melih.bookmanager.exception.BookNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class BookService {
 
     public void addBook(Book book) {
         if(existsByISBN(book.getISBN())) {
-            throw new BookNotFoundException(book.getISBN());
+            throw new BookAlreadyExistsException(book.getISBN());
         }
         books.add(book);
     }
@@ -49,7 +50,7 @@ public class BookService {
     public void addBooksBulk(List<Book> books) {
         for (Book book : books) {
             if(existsByISBN(book.getISBN())) {
-                throw new BookNotFoundException(book.getISBN());
+                throw new BookAlreadyExistsException(book.getISBN());
             }
         }
 

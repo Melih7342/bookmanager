@@ -2,10 +2,11 @@ package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.Book;
 import static com.melih.bookmanager.service.BookService.generateDummyBooks;
+
+import com.melih.bookmanager.exception.BookAlreadyExistsException;
+import com.melih.bookmanager.exception.BookNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,10 +107,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.addBook(existingBook))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("Book already exists")
-                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-                .isEqualTo(HttpStatus.CONFLICT);
+                .isInstanceOf(BookAlreadyExistsException.class);
     }
 
     @Test
@@ -142,10 +140,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.addBooksBulk(toBeAddedBooks))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("exists")
-                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-                .isEqualTo(HttpStatus.CONFLICT);
+                .isInstanceOf(BookAlreadyExistsException.class);
     }
     @Test
     void givenOneExistingBook_whenAddingBulk_thenNoBooksArePersisted() {
@@ -157,7 +152,7 @@ public class BookTests {
 
         // WHEN & THEN: Catch the exception
         assertThatThrownBy(() -> bookService.addBooksBulk(toBeAddedBooks))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(BookAlreadyExistsException.class);
 
         // THEN: Check if no books were added
         List<Book> booksAfterFailedAction = bookService.getAllBooks();
@@ -187,10 +182,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.removeBook(nonExistingIsbn))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("Book not found")
-                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-                .isEqualTo(HttpStatus.NOT_FOUND);
+                .isInstanceOf(BookNotFoundException.class);
     }
 
     @Test
@@ -202,7 +194,7 @@ public class BookTests {
         // WHEN & THEN
         // Catch the exception, so we can check, if the initial size hasn't changed
        assertThatThrownBy(() -> bookService.removeBook(nonExistingIsbn))
-               .isInstanceOf(ResponseStatusException.class);
+               .isInstanceOf(BookNotFoundException.class);
 
        List<Book> books = bookService.getAllBooks();
 
@@ -236,7 +228,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.removeBooksBulk(mixedIsbns))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(BookNotFoundException.class);
 
         List<Book> booksAfterRemoving = bookService.getAllBooks();
 
@@ -252,10 +244,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.removeBooksBulk(isbns))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("not found")
-                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-                .isEqualTo(HttpStatus.NOT_FOUND);
+                .isInstanceOf(BookNotFoundException.class);
     }
 
     @Test
@@ -292,10 +281,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.updateBook(updateData))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("not found")
-                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-                .isEqualTo(HttpStatus.NOT_FOUND);
+                .isInstanceOf(BookNotFoundException.class);
     }
 
     @Test
@@ -306,7 +292,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.updateBook(updateData))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(BookNotFoundException.class);
 
         List<Book> books = bookService.getAllBooks();
         assertThat(books).hasSize(initialSize);
@@ -340,10 +326,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.updateBooksBulk(updateData))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("not found")
-                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-                .isEqualTo(HttpStatus.NOT_FOUND);
+                .isInstanceOf(BookNotFoundException.class);
     }
 
     @Test
@@ -359,7 +342,7 @@ public class BookTests {
 
         // WHEN & THEN
         assertThatThrownBy(() -> bookService.updateBooksBulk(updateData))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(BookNotFoundException.class);
 
         Optional<Book> resultOne = bookService.getBookByISBN(existingIsbn);
         assertThat(resultOne).isPresent();
