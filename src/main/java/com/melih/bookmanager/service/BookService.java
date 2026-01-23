@@ -5,7 +5,6 @@ import com.melih.bookmanager.exception.BookAlreadyExistsException;
 import com.melih.bookmanager.exception.BookNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,6 @@ public class BookService {
         books.add(book);
     }
 
-    @Transactional // Annotation for future DB use
     public void addBooksBulk(List<Book> books) {
         for (Book book : books) {
             if(existsByISBN(book.getISBN())) {
@@ -68,7 +66,6 @@ public class BookService {
         books.remove(bookToDelete.get());
     }
 
-    @Transactional
     public void removeBooksBulk(List<String> isbnList) {
         for (String isbn : isbnList) {
             if (!existsByISBN(isbn)) {
@@ -92,7 +89,6 @@ public class BookService {
         bookToUpdate.setPages(book.getPages());
     }
 
-    @Transactional
     public void updateBooksBulk(List<Book> books) {
         for (Book book : books) {
             if (!existsByISBN(book.getISBN())) {
