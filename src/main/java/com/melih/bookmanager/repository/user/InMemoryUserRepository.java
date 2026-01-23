@@ -1,13 +1,14 @@
-package com.melih.bookmanager.repository;
+package com.melih.bookmanager.repository.user;
 
 import com.melih.bookmanager.api.model.User;
-import com.melih.bookmanager.service.UserService;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class InMemoryUserRepository implements BookRepository {
+@Repository
+public class InMemoryUserRepository implements UserRepository {
     private final Map<String, User> users = new HashMap<>();
 
     @Override
