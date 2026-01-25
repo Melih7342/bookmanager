@@ -3,8 +3,8 @@ package com.melih.bookmanager.service;
 import com.melih.bookmanager.api.model.Book;
 import static com.melih.bookmanager.service.BookService.generateDummyBooks;
 
-import com.melih.bookmanager.exception.BookAlreadyExistsException;
-import com.melih.bookmanager.exception.BookNotFoundException;
+import com.melih.bookmanager.exception.Book.BookAlreadyExistsException;
+import com.melih.bookmanager.exception.Book.BookNotFoundException;
 import com.melih.bookmanager.repository.book.InMemoryBookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

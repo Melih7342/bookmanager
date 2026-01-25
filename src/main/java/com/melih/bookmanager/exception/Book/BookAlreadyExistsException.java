@@ -1,4 +1,4 @@
-package com.melih.bookmanager.exception;
+package com.melih.bookmanager.exception.Book;
 
 public class BookAlreadyExistsException extends RuntimeException {
     public BookAlreadyExistsException(String isbn) {

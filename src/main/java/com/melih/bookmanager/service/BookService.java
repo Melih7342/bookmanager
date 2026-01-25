@@ -1,8 +1,8 @@
 package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.Book;
-import com.melih.bookmanager.exception.BookAlreadyExistsException;
-import com.melih.bookmanager.exception.BookNotFoundException;
+import com.melih.bookmanager.exception.Book.BookAlreadyExistsException;
+import com.melih.bookmanager.exception.Book.BookNotFoundException;
 import com.melih.bookmanager.repository.book.InMemoryBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

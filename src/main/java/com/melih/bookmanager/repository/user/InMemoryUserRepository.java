@@ -20,4 +20,12 @@ public class InMemoryUserRepository implements UserRepository {
     public void save(User user) {
         users.put(user.getUsername(), user);
     }
+
+    public boolean existsByUsername(String username) {
+        return users.containsKey(username);
+    }
+
+    public void delete(User user) {
+        users.remove(user.getUsername());
+    }
 }

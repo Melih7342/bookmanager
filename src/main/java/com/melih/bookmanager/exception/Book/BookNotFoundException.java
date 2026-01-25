@@ -1,4 +1,4 @@
-package com.melih.bookmanager.exception;
+package com.melih.bookmanager.exception.Book;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
