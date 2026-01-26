@@ -13,6 +13,7 @@ public class User {
     private String username;
     private String password;
     private List<Book> currentlyReading;
+    private List<Book> readBooks;
     private boolean active;
 
     public User(String username, String password) {

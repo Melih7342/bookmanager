@@ -5,6 +5,7 @@ import com.melih.bookmanager.exception.User.BadCredentialsException;
 import com.melih.bookmanager.exception.User.DisabledAccountException;
 import com.melih.bookmanager.exception.User.UsernameAlreadyExistsException;
 import com.melih.bookmanager.repository.user.InMemoryUserRepository;
+import com.melih.bookmanager.utils.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,25 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final InMemoryUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+    }
+
+    public UserResponse getUserProfile(String username) {
+        User user = getUserByUsername(username);
+
+        UserResponse userResponse = new UserResponse();
+
+        // build the user response
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setCurrentlyReading(user.getCurrentlyReading());
+        userResponse.setReadBooks(user.getReadBooks());
+
+        return userResponse;
+    }
 
     public void register(String username, String password) {
         if(userRepository.existsByUsername(username)) {
