@@ -174,4 +174,44 @@ public class UserServiceTests {
         assertThatThrownBy(() -> userService.login(username, password))
                 .isInstanceOf(InactiveAccountException.class);
     }
+
+    @Test
+    void givenValidCredentials_whenDeactivateAccount_thenAccountIsDeactivated() {
+        // GIVEN
+        String username = "jeff";
+        String password = "Spring123";
+
+        // WHEN
+        userService.deactivateAccount(username, password);
+
+        // THEN
+        User updatedUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AssertionError("User should exist in repository"));
+
+        assertThat(updatedUser.isActive()).isFalse();
+
+    }
+
+    @Test
+    void givenNonExistingUsername_whenDeactivateAccount_thenThrowBadCredentialsException() {
+        // GIVEN
+        String username = "alexandra12";
+        String password = "Spring123";
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> userService.deactivateAccount(username, password))
+                .isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    void givenFalsePassword_whenDeactivateAccount_thenThrowBadCredentialsException() {
+        // GIVEN
+        String username = "jeff";
+        String password = "JokerArkham1";
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> userService.deactivateAccount(username, password))
+                .isInstanceOf(BadCredentialsException.class);
+
+    }
 }

@@ -63,11 +63,14 @@ public class UserService {
 
     public void deactivateAccount(String username, String password) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+                .orElseThrow(() -> new BadCredentialsException(username));
 
         if (passwordEncoder.matches(password, user.getPassword())) {
             user.setActive(false);
             userRepository.save(user);
+        }
+        else {
+            throw new BadCredentialsException();
         }
     }
 
