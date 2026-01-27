@@ -36,6 +36,7 @@ public class UserService {
         return userResponse;
     }
 
+
     public void register(String username, String password) {
         if(userRepository.existsByUsername(username)) {
             throw new UsernameAlreadyExistsException();
