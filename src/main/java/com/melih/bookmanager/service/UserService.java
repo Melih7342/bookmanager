@@ -2,7 +2,7 @@ package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.User;
 import com.melih.bookmanager.exception.User.BadCredentialsException;
-import com.melih.bookmanager.exception.User.DisabledAccountException;
+import com.melih.bookmanager.exception.User.InactiveAccountException;
 import com.melih.bookmanager.exception.User.UsernameAlreadyExistsException;
 import com.melih.bookmanager.repository.user.InMemoryUserRepository;
 import com.melih.bookmanager.utils.UserResponse;
@@ -53,7 +53,7 @@ public class UserService {
                 .orElseThrow(BadCredentialsException::new);
 
         if (!user.isActive()) {
-            throw new DisabledAccountException();
+            throw new InactiveAccountException();
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {

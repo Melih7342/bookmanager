@@ -3,7 +3,7 @@ package com.melih.bookmanager.exception;
 import com.melih.bookmanager.exception.Book.BookAlreadyExistsException;
 import com.melih.bookmanager.exception.Book.BookNotFoundException;
 import com.melih.bookmanager.exception.User.BadCredentialsException;
-import com.melih.bookmanager.exception.User.DisabledAccountException;
+import com.melih.bookmanager.exception.User.InactiveAccountException;
 import com.melih.bookmanager.exception.User.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +37,8 @@ public class GlobalExceptionHandler {
         return buildExceptionResponseBody(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(DisabledAccountException.class)
-    public ResponseEntity<Object> handleDisabledAccountException(DisabledAccountException ex) {
+    @ExceptionHandler(InactiveAccountException.class)
+    public ResponseEntity<Object> handleDisabledAccountException(InactiveAccountException ex) {
         return buildExceptionResponseBody(ex.getMessage(), HttpStatus.CONFLICT);
     }
 

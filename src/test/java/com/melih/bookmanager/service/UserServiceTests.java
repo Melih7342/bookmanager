@@ -1,6 +1,9 @@
 package com.melih.bookmanager.service;
 
 import com.melih.bookmanager.api.model.User;
+import com.melih.bookmanager.exception.User.BadCredentialsException;
+import com.melih.bookmanager.exception.User.InactiveAccountException;
+import com.melih.bookmanager.exception.User.UsernameAlreadyExistsException;
 import com.melih.bookmanager.repository.user.InMemoryUserRepository;
 import com.melih.bookmanager.utils.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class UserServiceTests {
@@ -39,7 +44,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void givenExistingUsername_whenGetUserByUsername_thenReturnRightUser() {
+    void givenExistingUsername_whenGetUserByUsername_thenReturnRightUser() {
         // GIVEN
         String username = "jeff";
 
@@ -60,7 +65,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void givenNonExistingUsername_whenGetUserByUsername_thenExceptionIsThrown() {
+    void givenNonExistingUsername_whenGetUserByUsername_thenExceptionIsThrown() {
         // GIVEN
         String nonExistingUsername = "IdoNotExist";
 
@@ -70,7 +75,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void givenExistingUsername_whenGetUserProfile_thenReturnRightUserProfile() {
+    void givenExistingUsername_whenGetUserProfile_thenReturnRightUserProfile() {
         // GIVEN
         String username = "jeff";
 
@@ -90,7 +95,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void givenNonExistingUsername_whenGetUserProfile_thenExceptionIsThrown() {
+    void givenNonExistingUsername_whenGetUserProfile_thenExceptionIsThrown() {
         // GIVEN
         String nonExistingUsername = "IdoNotExist";
 
@@ -99,7 +104,74 @@ public class UserServiceTests {
                 .isInstanceOf(UsernameNotFoundException.class);
     }
 
+    @Test
+    void givenNewUsername_whenRegister_thenNewUserIsRegistered() {
+        // GIVEN
+        String username = "samantha";
+        String password = "JokerArkham1";
 
+        // WHEN
+        userService.register(username, password);
 
+        // THEN
+        assertThat(userRepository.existsByUsername(username));
+    }
 
+    @Test
+    void givenExistingUsername_whenRegister_thenExceptionIsThrown() {
+        // GIVEN
+        String username = "jeff";
+        String password = "JokerArkham1";
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> userService.register(username, password))
+                .isInstanceOf(UsernameAlreadyExistsException.class);
+    }
+
+    @Test
+    void givenValidCredentials_whenLogin_thenUserIsAuthenticated() {
+        // GIVEN
+        String username = "jeff";
+        String password = "Spring123";
+
+        // WHEN & THEN
+        assertThatCode(() -> userService.login(username, password))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void givenFalsePassword_whenLogin_thenThrowBadCredentialsException() {
+        // GIVEN
+        String username = "jeff";
+        String password = "JokerArkham1";
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> userService.login(username, password))
+                .isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    void givenNonExistingUsername_whenLogin_thenThrowBadCredentialsException() {
+        // GIVEN
+        String username = "alexandra12";
+        String password = "Spring123";
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> userService.login(username, password))
+                .isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    void givenDeactivatedAccount_whenLogin_thenThrowInactiveAccountException() {
+        // GIVEN
+        String username = "jeff";
+        String password = "Spring123";
+
+        Optional<User> user = userRepository.findByUsername(username); // find the corresponding user
+        user.ifPresent(u -> u.setActive(false)); // set the field "active" to false
+
+        // WHEN & THEN
+        assertThatThrownBy(() -> userService.login(username, password))
+                .isInstanceOf(InactiveAccountException.class);
+    }
 }
