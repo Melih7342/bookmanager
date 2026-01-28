@@ -40,12 +40,12 @@ public class BookController {
     @PostMapping
     public ResponseEntity<Book> createBook(@RequestBody Book newBook) {
         bookService.addBook(newBook);
-        ServletUriComponentsBuilder
+        URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{isbn}")
                 .buildAndExpand(newBook.getISBN())
                 .toUri();
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBook);
+        return ResponseEntity.created(location).body(newBook);
     }
 
     // Add a list of books at once

@@ -22,12 +22,12 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserAuthenticationRequest request) {
         userService.register(request.getUsername(), request.getPassword());
-        ServletUriComponentsBuilder
+        URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{username}")
                 .buildAndExpand(request.getUsername())
                 .toUri();
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        return ResponseEntity.created(location).body("User registered successfully");
     }
 
     @GetMapping("/{username}")

@@ -34,6 +34,8 @@ public class UserIntegrationTest {
         userRepository.save(new User("jeff", "Spring123!"));
     }
 
+
+
     @Test
     void givenValidCredentials_whenRegisterUser_thenReturnCreatedAndSaveUser() throws Exception {
         // GIVEN

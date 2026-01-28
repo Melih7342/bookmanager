@@ -2,7 +2,6 @@ package com.melih.bookmanager.integration;
 
 import com.melih.bookmanager.api.model.Book;
 import com.melih.bookmanager.repository.book.InMemoryBookRepository;
-import com.melih.bookmanager.repository.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org. springframework.http.MediaType;
@@ -14,7 +13,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -55,12 +53,12 @@ public class BookIntegrationTest {
     void createBook_AndRetrieveIt() throws Exception {
         Book newBook = new Book("978-3-16-148410-0", "The Great Gatsby", "F. Scott Fitzgerald", 126);
 
-        // 1. Save book (jetzt als eingeloggter User)
+        // 1. Save book
         mockMvc.perform(post("/books")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newBook)))
-                .andExpect(status().isCreated());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newBook)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
 
         // 2. Retrieve book
         mockMvc.perform(get("/books/978-3-16-148410-0"))
