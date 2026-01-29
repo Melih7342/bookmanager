@@ -1,14 +1,8 @@
 package com.melih.bookmanager.repository.book;
 
 import com.melih.bookmanager.api.model.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-import java.util.Optional;
+public interface BookRepository extends JpaRepository<Book, String> {
 
-public interface BookRepository {
-    List<Book> findAll();
-    Optional<Book> findByIsbn(String isbn);
-
-    void save(Book book);
-    void delete(String isbn);
 }

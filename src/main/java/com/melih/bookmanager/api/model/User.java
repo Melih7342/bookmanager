@@ -1,25 +1,49 @@
 package com.melih.bookmanager.api.model;
 
-import lombok.Data;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CollectionIdJdbcTypeCode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Entity
+@Getter @Setter
+@NoArgsConstructor
 public class User {
-    private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    private String role;
+
     private boolean active;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_currently_reading",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_isbn")
+    )
     private List<Book> currentlyReading = new ArrayList<>();
-    private List<Book> readBooks =  new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_read_books",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_isbn")
+    )
+    private List<Book> readBooks = new ArrayList<>();
 
     public User(String username, String password) {
-        this.id = UUID.randomUUID();
         this.username = username;
         this.password = password;
-        this.active = true;
     }
 }

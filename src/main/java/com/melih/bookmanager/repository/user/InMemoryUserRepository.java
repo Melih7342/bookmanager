@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
+/*
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private final Map<String, User> users = new HashMap<>();
@@ -29,3 +29,5 @@ public class InMemoryUserRepository implements UserRepository {
         users.remove(user.getUsername());
     }
 }
+
+ */

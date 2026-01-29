@@ -1,11 +1,10 @@
 package com.melih.bookmanager.repository.user;
 
 import com.melih.bookmanager.api.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
-
-    void save(User user);
 }

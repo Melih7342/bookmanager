@@ -1,9 +1,7 @@
 package com.melih.bookmanager.api.controller;
 
 import com.melih.bookmanager.api.model.Book;
-import com.melih.bookmanager.repository.book.InMemoryBookRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -4,7 +4,8 @@ import com.melih.bookmanager.api.model.User;
 import com.melih.bookmanager.exception.User.BadCredentialsException;
 import com.melih.bookmanager.exception.User.InactiveAccountException;
 import com.melih.bookmanager.exception.User.UsernameAlreadyExistsException;
-import com.melih.bookmanager.repository.user.InMemoryUserRepository;
+import com.melih.bookmanager.repository.book.BookRepository;
+import com.melih.bookmanager.repository.user.UserRepository;
 import com.melih.bookmanager.utils.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class UserServiceTest {
-    private InMemoryUserRepository userRepository;
+    private UserRepository userRepository;
+    private BookRepository bookRepository;
     private PasswordEncoder passwordEncoder;
     private UserService userService;
 
     @BeforeEach
     void setUp() {
-        this.userRepository = new InMemoryUserRepository();
         this.passwordEncoder = new BCryptPasswordEncoder();
 
         List<User> testUsers = new ArrayList<>(List.of(
@@ -36,11 +37,9 @@ public class UserServiceTest {
                 new User("carla10", passwordEncoder.encode("Cheesecake99"))
         ));
 
-        for (User user : testUsers) {
-            userRepository.save(user);
-        }
+        userRepository.saveAll(testUsers);
 
-        this.userService = new UserService(userRepository, passwordEncoder);
+        this.userService = new UserService(userRepository, bookRepository, passwordEncoder);
     }
 
     @Test
@@ -112,9 +111,10 @@ public class UserServiceTest {
 
         // WHEN
         userService.register(username, password);
+        Optional<User> result = userRepository.findByUsername(username);
 
         // THEN
-        assertThat(userRepository.existsByUsername(username));
+        assertThat(result.isPresent()).isTrue();
     }
 
     @Test

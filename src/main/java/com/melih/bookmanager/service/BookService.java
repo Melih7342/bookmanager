@@ -3,7 +3,8 @@ package com.melih.bookmanager.service;
 import com.melih.bookmanager.api.model.Book;
 import com.melih.bookmanager.exception.Book.BookAlreadyExistsException;
 import com.melih.bookmanager.exception.Book.BookNotFoundException;
-import com.melih.bookmanager.repository.book.InMemoryBookRepository;
+import com.melih.bookmanager.repository.book.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class BookService {
-    private final InMemoryBookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
     // Constructor with instant enrichment
-    public BookService(InMemoryBookRepository bookRepository) {
+    public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
@@ -27,7 +28,7 @@ public class BookService {
     }
 
     public Book getBookByIsbn(String isbn) {
-        Optional<Book> book = bookRepository.findByIsbn(isbn);
+        Optional<Book> book = bookRepository.findById(isbn);
         if (book.isPresent()) {
             return book.get();
         }
@@ -35,58 +36,41 @@ public class BookService {
     }
 
     public void addBook(Book book) {
-        if(bookRepository.existsByISBN(book.getISBN())) {
+        if(bookRepository.existsById(book.getISBN())) {
             throw new BookAlreadyExistsException(book.getISBN());
         }
         bookRepository.save(book);
     }
 
+    @Transactional
     public void addBooksBulk(List<Book> books) {
-        for (Book book : books) {
-            if(bookRepository.existsByISBN(book.getISBN())) {
-                throw new BookAlreadyExistsException(book.getISBN());
-            }
-        }
-
-        for (Book book : books) {
-            bookRepository.save(book);
-        }
+        bookRepository.saveAll(books);
     }
 
     public void removeBook(String isbn) {
-        if(!bookRepository.existsByISBN(isbn)) {
+        if(!bookRepository.existsById(isbn)) {
             throw new BookNotFoundException(isbn);
         }
-        bookRepository.delete(isbn);
+        bookRepository.deleteById(isbn);
     }
 
+    @Transactional
     public void removeBooksBulk(List<String> isbnList) {
         for (String isbn : isbnList) {
-            if (!bookRepository.existsByISBN(isbn)) {
-                throw new BookNotFoundException(isbn);
-            }
-        }
-        for (String isbn : isbnList) {
-            bookRepository.delete(isbn);
+            bookRepository.deleteById(isbn);
         }
     }
 
     public void updateBook(Book book) {
-        if (!bookRepository.existsByISBN(book.getISBN())) {
+        if (!bookRepository.existsById(book.getISBN())) {
             throw new BookNotFoundException(book.getISBN());
         }
         bookRepository.save(book);
     }
 
+    @Transactional
     public void updateBooksBulk(List<Book> books) {
-        for (Book book : books) {
-            if (!bookRepository.existsByISBN(book.getISBN())) {
-                throw new BookNotFoundException(book.getISBN());
-            }
-        }
-        for (Book book : books) {
-            bookRepository.save(book);
-        }
+        bookRepository.saveAll(books);
     }
 
     // Generate a list of Dummy-Books for testing purposes

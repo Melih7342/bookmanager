@@ -1,7 +1,7 @@
 package com.melih.bookmanager.integration;
 
 import com.melih.bookmanager.api.model.User;
-import com.melih.bookmanager.repository.user.InMemoryUserRepository;
+import com.melih.bookmanager.repository.user.UserRepository;
 import com.melih.bookmanager.utils.UserAuthenticationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class UserIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private InMemoryUserRepository userRepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     void setup() {

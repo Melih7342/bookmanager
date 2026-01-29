@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import static com.melih.bookmanager.service.BookService.generateDummyBooks;
 
 import java.util.*;
-
+/*
 @Repository
 public class InMemoryBookRepository implements BookRepository {
     private Map<String, Book> books = new HashMap<>();
@@ -45,3 +45,4 @@ public class InMemoryBookRepository implements BookRepository {
         this.books.clear();
     }
 }
+ */

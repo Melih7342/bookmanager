@@ -8,8 +8,9 @@ import java.util.UUID;
 
 @Data
 public class UserResponse {
-    private UUID id;
+    private long id;
     private String username;
     private List<Book> currentlyReading;
     private List<Book> readBooks;
+    private String role;
 }

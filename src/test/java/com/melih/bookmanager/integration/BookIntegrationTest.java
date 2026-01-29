@@ -1,7 +1,7 @@
 package com.melih.bookmanager.integration;
 
 import com.melih.bookmanager.api.model.Book;
-import com.melih.bookmanager.repository.book.InMemoryBookRepository;
+import com.melih.bookmanager.repository.book.BookRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org. springframework.http.MediaType;
@@ -27,7 +27,7 @@ public class BookIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private InMemoryBookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @BeforeEach
     void setUp() {
@@ -37,7 +37,7 @@ public class BookIntegrationTest {
 
     @AfterEach
     void tearDown() {
-        bookRepository.clear();
+        bookRepository.deleteAll();
     }
 
     @Test

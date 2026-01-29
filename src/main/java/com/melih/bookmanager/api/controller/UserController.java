@@ -53,4 +53,10 @@ public class UserController {
         return ResponseEntity.ok("Password changed successfully");
     }
 
+    @PostMapping("/read/{isbn}")
+    public ResponseEntity<String> markReadBook(@PathVariable String isbn, @RequestBody String username) {
+        userService.markAsRead(isbn, username);
+        return ResponseEntity.ok("Book successfully marked as read");
+    }
+
 }
