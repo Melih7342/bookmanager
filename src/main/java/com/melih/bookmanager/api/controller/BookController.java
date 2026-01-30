@@ -30,7 +30,7 @@ public class BookController {
 
     // Get a specific book with its ISBN
     @GetMapping("/{isbn}")
-    public Book getBookByISBN(@PathVariable String isbn) {
+    public Book getBookByIsbn(@PathVariable String isbn) {
         return bookService.getBookByIsbn(isbn);
     }
 
@@ -41,7 +41,7 @@ public class BookController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{isbn}")
-                .buildAndExpand(newBook.getISBN())
+                .buildAndExpand(newBook.getIsbn())
                 .toUri();
         return ResponseEntity.created(location).body(newBook);
     }
@@ -70,14 +70,14 @@ public class BookController {
     }
 
     // Update one book
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<String> updateBook(@RequestBody Book book) {
         bookService.updateBook(book);
         return ResponseEntity.noContent().build();
     }
 
     // Update bulk of books
-    @PutMapping("/bulk")
+    @PatchMapping("/bulk")
     public ResponseEntity<String> updateBooksBulk(@RequestBody List<Book> books) {
         bookService.updateBooksBulk(books);
         return ResponseEntity.ok(String.format("Successfully updated %d books", books.size()));

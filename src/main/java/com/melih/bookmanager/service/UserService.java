@@ -11,12 +11,14 @@ import com.melih.bookmanager.repository.user.UserRepository;
 import com.melih.bookmanager.utils.UserResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
@@ -44,7 +46,9 @@ public class UserService {
 
 
     public void register(String username, String password) {
+        log.info("Attempting to register a new user: {}", username);
         if(userRepository.findByUsername(username).isPresent()) {
+            log.warn("Registration failed: Username '{}' is already taken", username);
             throw new UsernameAlreadyExistsException();
         }
         User user = new User();
@@ -53,6 +57,7 @@ public class UserService {
         user.setRole("ROLE_USER");
 
         userRepository.save(user);
+        log.info("User '{}' successfully registered and saved to the database", username);
     }
 
     public void login(String username, String password) {
@@ -89,6 +94,15 @@ public class UserService {
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+    @Transactional
+    public void markAsCurrentlyReading(String username, String isbn) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Book book = bookRepository.findById(isbn)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+
+        user.getCurrentlyReading().add(book);
     }
 
     @Transactional

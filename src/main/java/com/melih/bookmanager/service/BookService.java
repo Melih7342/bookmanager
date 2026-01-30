@@ -36,8 +36,8 @@ public class BookService {
     }
 
     public void addBook(Book book) {
-        if(bookRepository.existsById(book.getISBN())) {
-            throw new BookAlreadyExistsException(book.getISBN());
+        if(bookRepository.existsById(book.getIsbn())) {
+            throw new BookAlreadyExistsException(book.getIsbn());
         }
         bookRepository.save(book);
     }
@@ -64,8 +64,8 @@ public class BookService {
     }
 
     public void updateBook(Book book) {
-        if (!bookRepository.existsById(book.getISBN())) {
-            throw new BookNotFoundException(book.getISBN());
+        if (!bookRepository.existsById(book.getIsbn())) {
+            throw new BookNotFoundException(book.getIsbn());
         }
         bookRepository.save(book);
     }
@@ -78,7 +78,7 @@ public class BookService {
     // Generate a list of Dummy-Books for testing purposes
     public static List<Book> generateDummyBooks() {
         List<Book> books = new ArrayList<Book>();
-        String[] ISBNs = {
+        String[] isbns = {
                 "978-3-16-148410-0",
                 "978-0-545-01022-1",
                 "978-1-86197-876-9",
@@ -111,8 +111,8 @@ public class BookService {
         };
         int[] pages = {300, 350, 402, 508, 117, 958};
 
-        for (int i = 0; i < ISBNs.length; i++) {
-            String uniqueISBN = ISBNs[i];
+        for (int i = 0; i < isbns.length; i++) {
+            String uniqueISBN = isbns[i];
 
             String randomTitle = titles[ThreadLocalRandom.current().nextInt(titles.length)];
             String randomAuthor = authors[ThreadLocalRandom.current().nextInt(authors.length)];

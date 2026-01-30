@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @AllArgsConstructor @NoArgsConstructor
 public class Book {
     @Id
-    private String ISBN;
+    private String isbn;
     private String title;
     private String author;
     private int pages;
