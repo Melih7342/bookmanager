@@ -39,7 +39,6 @@ public class UserService {
         userResponse.setUsername(user.getUsername());
         userResponse.setCurrentlyReading(user.getCurrentlyReading());
         userResponse.setReadBooks(user.getReadBooks());
-        userResponse.setRole(user.getRole());
 
         return userResponse;
     }

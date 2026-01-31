@@ -1,4 +1,4 @@
-package com.melih.bookmanager.utils;
+package com.melih.bookmanager;
 
 import com.melih.bookmanager.api.model.Book;
 import com.melih.bookmanager.api.model.User;

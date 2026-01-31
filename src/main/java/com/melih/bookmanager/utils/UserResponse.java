@@ -12,5 +12,4 @@ public class UserResponse {
     private String username;
     private List<Book> currentlyReading;
     private List<Book> readBooks;
-    private String role;
 }

@@ -25,13 +25,13 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/user/login", "/error","/v3/api-docs",
-                                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/books/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
                 .httpBasic(Customizer.withDefaults());
 

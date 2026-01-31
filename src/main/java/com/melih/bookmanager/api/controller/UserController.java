@@ -1,13 +1,11 @@
 package com.melih.bookmanager.api.controller;
 
 import com.melih.bookmanager.api.model.Book;
-import com.melih.bookmanager.api.model.User;
 import com.melih.bookmanager.repository.user.UserRepository;
 import com.melih.bookmanager.service.UserService;
 import com.melih.bookmanager.utils.UserChangePasswordRequest;
 import com.melih.bookmanager.utils.UserResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.melih.bookmanager.utils.UserAuthenticationRequest;
