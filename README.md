@@ -1,6 +1,6 @@
 # 📚 BookManager API
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.x-brightgreen)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.2-brightgreen)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-21-orange)](https://www.oracle.com/java/)
 [![Security](https://img.shields.io/badge/Spring%20Security-RBAC-blue)](https://spring.io/projects/spring-security)
 
